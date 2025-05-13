@@ -4,7 +4,7 @@
             {{ __('Boekingen') }}
         </h2>
     </x-slot>
-    
+
     @if (session('success'))
         <div class="py-3">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -18,41 +18,55 @@
     @endif
 
     <div class="py-3 max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <a href="{{ route('boeking.create') }}" class="inline-block bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">
-            + Nieuwe Boeking
-        </a>
-    </div>
-
-    <div class="py-3 max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="space-y-6">
-            @foreach ($boekingen as $boeking)
+            @forelse ($boekingen as $boeking)
                 <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                    <div class="flex flex-col md:flex-row p-4 justify-between items-start md:items-center">
-                        <div>
-                            <h3 class="text-xl font-semibold text-gray-800">
-                                <a href="{{ route('boeking.edit', $boeking) }}" class="hover:underline">{{ $boeking->naam }}</a>
+                    <div class="flex p-4">
+                        <div class="w-full">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">
+                                <a href="{{ route('boeking.show', $boeking) }}" class="hover:underline">{{ optional($boeking->uuid)->naam ?? 'Onbekende klant' }}</a>
+                                
                             </h3>
-                            <p class="mt-2 text-sm text-gray-600">Email: {{ $boeking->email }}</p>
-                            <p class="text-sm text-gray-600">Datum: {{ $boeking->datum }}</p>
-                            <p class="text-sm text-gray-600">Stek: {{ $boeking->stek }}</p>
-                            <p class="text-sm text-gray-600">Prijs: €{{ number_format($boeking->prijs, 2, ',', '.') }}</p>
-                            <p class="text-sm text-gray-600">Betaling voldaan: {{ $boeking->voldaan ? 'Ja' : 'Nee' }}</p>
-                        </div>
-                        <div class="mt-4 md:mt-0 md:ml-auto">
-                            <form action="{{ route('boekingen.destroy', $boeking) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button
-                                    type="submit"
-                                    class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                                >
-                                    Verwijderen
-                                </button>
-                            </form>
+
+                            <p class="text-sm text-gray-600 mb-1">
+                                <strong>Datum:</strong> {{ \Carbon\Carbon::parse($boeking->datum)->format('d-m-Y') }}
+                            </p>
+
+                            <p class="text-sm text-gray-600 mb-1">
+                                <strong>Dagdelen:</strong>
+                                @php
+                                    $delen = [];
+                                    if($boeking->dagdeel_1) $delen[] = '1';
+                                    if($boeking->dagdeel_2) $delen[] = '2';
+                                    if($boeking->dagdeel_3) $delen[] = '3';
+                                @endphp
+                                {{ implode(', ', $delen) ?: 'Geen' }}
+                            </p>
+
+                            <p class="text-sm text-gray-600 mb-1">
+                                <strong>Arrangement:</strong> {{ $boeking->arrangement ? 'Ja' : 'Nee' }}
+                            </p>
+
+                            <p class="text-sm text-gray-600 mb-1">
+                                <strong>Voldaan:</strong> 
+                                @if ($boeking->voldaan)
+                                    Ja
+                                @else
+                                    @if ($boeking->mollie_id)
+                                        (Nee, Mollie)
+                                    @else
+                                        Nee, (Contant betaling)
+                                    @endif
+                                @endif
+                            </p>
+
                         </div>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <p class="text-gray-600 text-center">Er zijn nog geen boekingen beschikbaar.</p>
+            @endforelse
         </div>
+
     </div>
 </x-app-layout>
