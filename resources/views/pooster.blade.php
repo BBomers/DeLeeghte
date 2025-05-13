@@ -62,7 +62,7 @@ $bes = nl2br($bes);
 
             <!-- INFO BOVENOP SVG -->
             <div class="absolute top-0 left-0 z-10 " style="width: 100%;">
-                <h1 style="color: white; font-size: 45px; font-weight: bold; width: 100%; text-align: center;" class="archivo-black-regular" >{{ $wedstrijd->naam }} {{ $wedstrijd->date }}</h1>
+                <h1 style="color: white; font-size: 45px; font-weight: bold; width: 100%; text-align: center;" class="archivo-black-regular" >{{ $wedstrijd->naam }} {{ \Carbon\Carbon::parse($wedstrijd->date)->format('d-m-Y')  }}</h1>
                 <h1 style="color: white; font-size: 20px; font-weight: bold; width: 100%; text-align: left; margin-left: 1em" class="archivo-black-regular" >{!! $bes !!}</h1>
                 <img src="/storage/Logo_Deleeghte.png" alt="" style="width: 15em; margin-left: 1em; margin-top: 3em;">
                 <img src="/storage/FishLogo-01.png" alt="" style="width: 6em; margin-left: 39em; margin-top: 14em;">
