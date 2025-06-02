@@ -10,8 +10,19 @@ class DefaultController extends Controller
 {
     public function kalender()
     {
-        $wedstrijden = Wedstrijd::with('categorie')->get(); // Eager load categories for performance
-        return view('kalender', compact('wedstrijden'));
+        $aankomend = Wedstrijd::with('categorie')
+            ->whereDate('date', '>=', now()) // Alleen toekomstige of huidige datums
+            ->orderBy('date', 'asc')         // Eerstvolgende wedstrijden eerst
+            ->take(3)                         // Enkel de eerste 3
+            ->get();
+        $wedstrijden = Wedstrijd::with('categorie')
+            ->whereDate('date', '>=', now()) // Alleen toekomstige of huidige datums
+            ->orderBy('date', 'asc')         // Eerstvolgende wedstrijden eerst
+            ->get();
+            $categories = Categorie::all();
+
+        return view('kalender', compact('aankomend', 'wedstrijden', 'categories'));
     }
+
     
 }

@@ -6,6 +6,7 @@
         "dev": "vite"
     },
     "devDependencies": {
+        "@babel/plugin-proposal-decorators": "^7.27.1",
         "@tailwindcss/forms": "^0.5.2",
         "@tailwindcss/vite": "^4.0.0",
         "alpinejs": "^3.4.2",
