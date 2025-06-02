@@ -12,15 +12,20 @@ class DefaultController extends Controller
 {
     public function kalender()
     {
-        $sorted = Wedstrijd::with('categorie')
-            ->whereDate('date', '>=', Carbon::today())
-            ->orderBy('date')
-            ->limit(3)
+        $aankomend = Wedstrijd::with('categorie')
+            ->whereDate('date', '>=', now()) // Alleen toekomstige of huidige datums
+            ->orderBy('date', 'asc')         // Eerstvolgende wedstrijden eerst
+            ->take(3)                         // Enkel de eerste 3
             ->get();
         $wedstrijden = Wedstrijd::with('categorie')
+            ->whereDate('date', '>=', now()) // Alleen toekomstige of huidige datums
+            ->orderBy('date', 'asc')         // Eerstvolgende wedstrijden eerst
             ->get();
+            $categories = Categorie::all();
 
-        return view('kalender', compact('wedstrijden', 'sorted'));
+        return view('kalender', compact('aankomend', 'wedstrijden', 'categories'));
+
     }
+
     
 }
