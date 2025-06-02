@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Wedstrijd;
 use App\Models\Categorie;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+
 
 class DefaultController extends Controller
 {
@@ -22,6 +24,7 @@ class DefaultController extends Controller
             $categories = Categorie::all();
 
         return view('kalender', compact('aankomend', 'wedstrijden', 'categories'));
+
     }
 
     

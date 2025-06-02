@@ -9,14 +9,10 @@ class Boeking extends Model
 {
     use HasFactory;
 
-    // De tabelnaam is boekings, dit hoeft niet gespecificeerd te worden als je naam conventies volgt
     protected $table = 'boekings';
 
-    // Velden die massaal ingevuld kunnen worden
     protected $fillable = [
-        'naam',
-        'telefoonnummer',
-        'email',
+        'uuid_id',
         'datum',
         'prijs',
         'voldaan',
@@ -33,10 +29,9 @@ class Boeking extends Model
         'pallets_6mm',
     ];
 
-    // Date fields die automatisch behandeld worden als Carbon instances
-    protected $dates = [
-        'datum', // Zorgt ervoor dat de datum als een Carbon object wordt behandeld
-        'created_at',
-        'updated_at',
-    ];
+    // ✅ Relatie naar de 'Uuid' (of wat jouw model ook heet)
+    public function uuid()
+    {
+        return $this->belongsTo(Uuid::class, 'uuid_id');
+    }
 }

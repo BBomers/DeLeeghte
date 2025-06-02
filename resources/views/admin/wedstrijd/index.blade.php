@@ -62,6 +62,8 @@
                                         <button
                                                 type="submit"
                                                 class="ml-auto inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                
+                                                onsubmit="return confirm('Weet je zeker dat je deze boeking wilt verwijderen?')"
                                             >
                                             <svg id='Bin_2_24' width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><rect width='24' height='24' stroke='none' fill='#000000' opacity='0'/>
 

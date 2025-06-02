@@ -10,6 +10,7 @@
             <p class="text-lg font-normal text-gray-600 mb-8">Mis geen evenement</p>
             <div class="flex gap-5 flex-col">
 
+
               @foreach ($aankomend as $wedstrijd)
               <div class="p-6 rounded-xl bg-white">
                 <div class="flex items-center justify-between mb-3">
@@ -251,6 +252,7 @@
                 </div>
 
               </div>
+              <div id="calendar-grid" class="grid grid-cols-7 rounded-b-xl"></div>
             </div>
           </div>
         </div>
@@ -258,89 +260,74 @@
     </div>
   </section>
 
-  <div id="wedstrijdData" data-wedstrijden='@json($wedstrijden)'></div>
-  <div id="categorieData" data-categorie='@json($categories)'></div>
-
   <script>
-    var dataElement_wedstrijden = document.getElementById('wedstrijdData');
-    var dataElement_categories = document.getElementById('categorieData');
-    var wedstrijden = JSON.parse(dataElement_wedstrijden.getAttribute('data-wedstrijden'));
-    var categories = JSON.parse(dataElement_categories.getAttribute('data-categorie'));
-    console.log(wedstrijden);
-    console.log(categories);
-    let year = new Date().getFullYear();
-    let month = new Date().getMonth()+1;
+    // Initialize date and month
+    let currentDate = new Date();
+    let selectedView = "month"; // Default view
+    let currentMonth = currentDate.getMonth(); // 0 = January, 11 = December
+    let currentYear = currentDate.getFullYear();
 
+    // Function to update calendar grid based on month and year
+    const updateCalendar = () => {
+      // Set month title
+      document.getElementById('month-title').innerText = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
 
-    function next() {
-      month += 1;
-      if (month == 13 ) {
-        month = 1;
-        year += 1;
-      }
-      loadmonth();
-    }
-    function previos() {
-      month -= 1;
-      if (month == 0 ) {
-        month = 12;
-        year -= 1;
-      }
-      loadmonth();
-    }
-    
+      const firstDay = new Date(currentYear, currentMonth, 1);
+      const lastDay = new Date(currentYear, currentMonth + 1, 0);
+      const daysInMonth = lastDay.getDate();
+      const startingDay = firstDay.getDay(); // Day of the week the month starts
 
-    function loadmonth() {
-      console.log("loading Calender, "+month+" "+year);
-      const jaar = year;
-      const maand = month-1; 
-      const dag = 1;
-      const days = new Date(jaar, maand, 0).getDate()+1;
-      const mainstart = new Date(jaar, maand, 1).getDay();
-      let start = mainstart;
-      let before = mainstart;
-      console.log(start+" "+days);
-      let changes = 0;
-      while (changes < days) {
-        console.log(start);
-        changes +=1;
-        const div = document.getElementById(start);
-        const span = div.querySelector('span');
-        span.innerText = changes;
+      const calendarGrid = document.getElementById('calendar-grid');
+      calendarGrid.innerHTML = ''; // Clear previous grid
 
-
-
-        start += 1;
-
+      // Empty slots before the start of the month
+      for (let i = 0; i < startingDay; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.classList.add('flex', 'xl:aspect-square', 'max-xl:min-h-[60px]', 'p-3.5', 'bg-gray-50', 'border-r', 'border-b', 'border-indigo-200');
+        calendarGrid.appendChild(emptyCell);
       }
 
-
-      //werkt nog niet
-      if (!start <= 0) {
-        while (changes < days) {
-          let changes = 0;
-          console.log(start);
-          before -= 1;
-          changes +=1;
-          const div = document.getElementById(start);
-          const span = div.querySelector('span');
-          span.innerText = changes;
-
-
-
-
-        }
+      // Fill in the days of the month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayCell = document.createElement('div');
+        dayCell.classList.add('flex', 'xl:aspect-square', 'max-xl:min-h-[60px]', 'p-3.5', 'bg-white', 'border-r', 'border-b', 'border-indigo-200', 'transition-all', 'duration-300', 'hover:bg-indigo-50', 'cursor-pointer');
+        dayCell.innerHTML = `<span class="text-xs font-semibold text-gray-900">${day}</span>`;
+        calendarGrid.appendChild(dayCell);
       }
+    };
 
+    // Handle month navigation
+    document.getElementById('prev-month').addEventListener('click', () => {
+      currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
+      currentDate.setMonth(currentMonth);
+      updateCalendar();
+    });
 
+    document.getElementById('next-month').addEventListener('click', () => {
+      currentMonth = (currentMonth === 11) ? 0 : currentMonth + 1;
+      currentDate.setMonth(currentMonth);
+      updateCalendar();
+    });
 
-    }
+    // Handle view change
+    document.getElementById('day-view').addEventListener('click', () => {
+      selectedView = 'day';
+      updateCalendar();
+    });
 
-    loadmonth();
+    document.getElementById('week-view').addEventListener('click', () => {
+      selectedView = 'week';
+      updateCalendar();
+    });
 
+    document.getElementById('month-view').addEventListener('click', () => {
+      selectedView = 'month';
+      updateCalendar();
+    });
 
+    // Initialize the calendar with the current month
+    updateCalendar();
   </script>
-
 
 </x-layouts.base>
 <!-- Dit moet in je script onderaan je pagina -->
