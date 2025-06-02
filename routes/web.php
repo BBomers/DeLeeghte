@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BoekingController;
 use App\Http\Controllers\DefaultController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\KlantenBoekingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,6 +15,7 @@ Route::get('/', function () {
 
 Route::get('/pooster/{id}', [WedstrijdController::class, 'pooster'])->name('pooster');
 Route::get('/kalender', [DefaultController::class, 'kalender'])->name('kalender');
+Route::resource('/boeken', KlantenBoekingController::class);
 
 Route::get('/dashboard', function () {
     return view('dashboard');

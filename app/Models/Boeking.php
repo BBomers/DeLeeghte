@@ -29,9 +29,23 @@ class Boeking extends Model
         'pallets_6mm',
     ];
 
-    // ✅ Relatie naar de 'Uuid' (of wat jouw model ook heet)
+    protected $casts = [
+        'datum' => 'date',
+        'prijs' => 'decimal:2',
+        'voldaan' => 'boolean',
+        'dagdeel_1' => 'boolean',
+        'dagdeel_2' => 'boolean',
+        'dagdeel_3' => 'boolean',
+        'arrangement' => 'boolean',
+        'betaling' => 'boolean',
+        'regelement' => 'boolean',
+    ];
+
+    /**
+     * Relatie naar het UUID-model
+     */
     public function uuid()
     {
-        return $this->belongsTo(Uuid::class, 'uuid_id');
+        return $this->belongsTo(Uuid::class);
     }
 }
