@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('prijs', 8, 2);
             $table->boolean("voldaan");
             $table->string("mollie_id")->nullable();
-            $table->integer("stek");
+            $table->string("stek");
             $table->boolean("dagdeel_1");
             $table->boolean("dagdeel_2");
             $table->boolean("dagdeel_3");

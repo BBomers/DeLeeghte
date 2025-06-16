@@ -41,6 +41,7 @@ Route::middleware(['auth', 'check_role:admin'])->group(function () {
     Route::resource('/admin/categorie', CategorieController::class);
     Route::resource('/admin/boeking', BoekingController::class);
 });
+Route::post('/betalingen/webhook', [BetalingenController::class, 'webhook'])->name('betalingen.webhook');
 
 
 

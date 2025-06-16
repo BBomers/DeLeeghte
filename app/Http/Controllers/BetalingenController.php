@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Mollie\Laravel\Facades\Mollie;
 use App\Models\Boeking;
+use Mollie\Api\MollieApiClient;
+
 
 class BetalingenController extends Controller
 {
@@ -13,20 +15,21 @@ class BetalingenController extends Controller
      */
     public function startPayment(Boeking $boeking)
     {
-        $payment = Mollie::api()->payments()->create([
+        $payment = Mollie::api()->payments->create([
             'amount' => [
                 'currency' => 'EUR',
                 'value' => number_format($boeking->prijs, 2, '.', ''),
             ],
             'description' => "Boeking #{$boeking->id}",
+            /*'redirectUrl' => route('betalingen.callback', $boeking),
+            'webhookUrl' => route('betalingen.webhook'),*/
             'redirectUrl' => route('betalingen.callback', $boeking),
-            'webhookUrl' => route('betalingen.webhook'),
+            'webhookUrl' => env('MOLLIE_WEBHOOK'),
             'metadata' => [
                 'boeking_id' => $boeking->id,
             ],
         ]);
 
-        // Sla Mollie ID op voor later
         $boeking->mollie_id = $payment->id;
         $boeking->save();
 
@@ -38,7 +41,7 @@ class BetalingenController extends Controller
      */
     public function handleCallback(Boeking $boeking)
     {
-        $payment = Mollie::api()->payments()->get($boeking->mollie_id);
+        $payment = Mollie::api()->payments->get($boeking->mollie_id);
 
         if ($payment->isPaid()) {
             $boeking->voldaan = true;
@@ -60,7 +63,7 @@ class BetalingenController extends Controller
             return response()->json(['error' => 'Payment ID ontbreekt'], 400);
         }
 
-        $payment = Mollie::api()->payments()->get($paymentId);
+        $payment = Mollie::api()->payments->get($paymentId);
 
         $boekingId = $payment->metadata->boeking_id ?? null;
         $boeking = Boeking::find($boekingId);

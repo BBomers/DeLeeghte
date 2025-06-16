@@ -37,6 +37,23 @@ class KlantenBoekingController extends Controller
      */
     public function store(Request $request)
     {
+
+        if ($request->has('betaling') == false) {
+            return back()
+                ->withErrors(['betaling' => 'U moet akkoort gaan met de betaling.'])
+                ->withInput();
+        }
+        if ($request->has('regelement') == false) {
+            return back()
+                ->withErrors(['regelement' => 'U moet akkoort gaan met het regelement.'])
+                ->withInput();
+        }
+
+        if ($request->has('dagdeel_1') == true || $request->has('dagdeel_2') == true  || $request->has('dagdeel_3') == true ){
+            return back()
+                ->withErrors(['Dagdeel' => 'U moet een dagdeel kiezen.'])
+                ->withInput();
+        }
         // Controleer input velden
         $validated = $request->validate([
             'naam' => 'required|string|max:255',
@@ -68,12 +85,12 @@ class KlantenBoekingController extends Controller
         }
 
         // Controleren of ergeen wedstrijd is
-        $wedstrijdExists = \App\Models\Wedstrijd::where('date', $validated['datum'])->exists();
+        /*$wedstrijdExists = \App\Models\Wedstrijd::where('date', $validated['datum'])->exists();
         if ($wedstrijdExists) {
             return back()
                 ->withErrors(['datum' => 'Er is al een wedstrijd gepland op deze datum.'])
                 ->withInput();
-        }
+        }*/
 
         // Controleren of er geen boeking is.
         $query = Boeking::where('datum', $validated['datum'])

@@ -33,7 +33,7 @@
  */
 return [
 
-    'key' => env('MOLLIE_KEY', 'live_jvqWaaVrbNcbDPxwg9TUAESScJw6Qk'),
+    'key' => env('MOLLIE_KEY', 'test_aEuTDaV9BGtyk6tbR4qcq4hVkAnkBn'),
 
     // If you intend on using Mollie Connect, place the following in the 'config/services.php'
     // 'mollie' => [
